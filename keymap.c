@@ -5,6 +5,90 @@
 #define _BL 0
 #define _FL 1
 
+uint8_t mod_state;
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    mod_state = get_mods();
+    switch (keycode) {
+
+    // Ä & ä
+    case KC_A:
+        if (mod_state & MOD_MASK_ALT) {
+            if (record->event.pressed) {
+                unregister_code(KC_LALT);
+                unregister_code(KC_RALT);
+                tap_code16(A(KC_U));
+                tap_code(KC_A);
+                set_mods(mod_state);
+            }
+            return false;
+        }
+        return true;
+        break;
+
+    // Ü & ü
+    case KC_U:
+        if (mod_state & MOD_MASK_ALT) {
+            if (record->event.pressed) {
+                unregister_code(KC_LALT);
+                unregister_code(KC_RALT);
+                tap_code16(A(KC_U));
+                tap_code(KC_U);
+                set_mods(mod_state);
+            }
+            return false;
+        }
+        return true;
+        break;
+
+    // Ö & ö
+    case KC_O:
+        if (mod_state & MOD_MASK_ALT) {
+            if (record->event.pressed) {
+                unregister_code(KC_LALT);
+                unregister_code(KC_RALT);
+                tap_code16(A(KC_U));
+                tap_code(KC_O);
+                set_mods(mod_state);
+            }
+            return false;
+        }
+        return true;
+        break;
+
+    // ß
+    case KC_S:
+        if (mod_state & MOD_MASK_ALT) {
+            if (record->event.pressed) {
+                unregister_code(KC_LALT);
+                unregister_code(KC_RALT);
+                SEND_STRING(SS_LALT("s"));
+                set_mods(mod_state);
+            }
+            return false;
+        }
+        return true;
+        break;
+
+    // EUR ß€€€€€€€
+    case KC_E:
+        if (mod_state & MOD_MASK_ALT) {
+            if (record->event.pressed) {
+                unregister_code(KC_LALT);
+                unregister_code(KC_RALT);
+                SEND_STRING(SS_LALT(SS_LSFT("2")));
+                set_mods(mod_state);
+            }
+            return false;
+        }
+        return true;
+        break;
+
+    }
+    return true;
+}
+
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_BL] = LAYOUT_ansi(
