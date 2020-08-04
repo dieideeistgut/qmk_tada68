@@ -1,6 +1,7 @@
 #include QMK_KEYBOARD_H
 
 #define MODS_SHIFT_MASK  (MOD_BIT(KC_LSHIFT)|MOD_BIT(KC_RSHIFT))
+
 #define _______ KC_TRNS
 #define _BL 0
 #define _FL 1
@@ -9,84 +10,115 @@ uint8_t mod_state;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     mod_state = get_mods();
+    static uint8_t shift_mask;
+    shift_mask = get_mods()&MODS_SHIFT_MASK;
+
     switch (keycode) {
 
-    // Ä & ä
-    case KC_A:
-        if (mod_state & MOD_MASK_ALT) {
-            if (record->event.pressed) {
-                unregister_code(KC_LALT);
-                unregister_code(KC_RALT);
-                tap_code16(A(KC_U));
-                tap_code(KC_A);
-                set_mods(mod_state);
+        // Ä & ä
+        case KC_A:
+            if (mod_state & MOD_MASK_ALT) {
+                if (record->event.pressed) {
+                    unregister_code(KC_LALT);
+                    unregister_code(KC_RALT);
+
+                    if (shift_mask){
+                        unregister_code(KC_LSFT);
+                        unregister_code(KC_RSFT);
+                        SEND_STRING(SS_LALT("u") SS_LSFT("a"));
+                    }
+                    else {
+                        tap_code16(A(KC_U));
+                        tap_code(KC_A);
+                    }
+
+                    set_mods(mod_state);
+                }
+                return false;
             }
-            return false;
+            return true;
+            break;
+
+        // Ü & ü
+        case KC_U:
+            if (mod_state & MOD_MASK_ALT) {
+                if (record->event.pressed) {
+                    unregister_code(KC_LALT);
+                    unregister_code(KC_RALT);
+
+                    if (shift_mask){
+                        unregister_code(KC_LSFT);
+                        unregister_code(KC_RSFT);
+                        SEND_STRING(SS_LALT("u") SS_LSFT("u"));
+                    }
+                    else {
+                        tap_code16(A(KC_U));
+                        tap_code(KC_U);
+                    }
+
+                    set_mods(mod_state);
+                }
+                return false;
+            }
+            return true;
+            break;
+
+        // Ö & ö
+        case KC_O:
+            if (mod_state & MOD_MASK_ALT) {
+                if (record->event.pressed) {
+                    unregister_code(KC_LALT);
+                    unregister_code(KC_RALT);
+
+                    if (shift_mask){
+                        unregister_code(KC_LSFT);
+                        unregister_code(KC_RSFT);
+                        SEND_STRING(SS_LALT("u") SS_LSFT("o"));
+                    }
+                    else {
+                        tap_code16(A(KC_U));
+                        tap_code(KC_O);
+                    }
+
+                    set_mods(mod_state);
+                }
+                return false;
+            }
+            return true;
+            break;
+
+        // ß
+        case KC_S:
+            if (mod_state & MOD_MASK_ALT) {
+                if (record->event.pressed) {
+                    unregister_code(KC_LALT);
+                    unregister_code(KC_RALT);
+                    SEND_STRING(SS_LALT("s"));
+                    set_mods(mod_state);
+                }
+                return false;
+            }
+            return true;
+            break;
+
+        // EUR
+        case KC_E:
+            if (mod_state & MOD_MASK_ALT) {
+                if (record->event.pressed) {
+                    unregister_code(KC_LALT);
+                    unregister_code(KC_RALT);
+                    SEND_STRING(SS_LALT(SS_LSFT("2")));
+                    set_mods(mod_state);
+                }
+                return false;
+            }
+            return true;
+            break;
+
         }
         return true;
-        break;
-
-    // Ü & ü
-    case KC_U:
-        if (mod_state & MOD_MASK_ALT) {
-            if (record->event.pressed) {
-                unregister_code(KC_LALT);
-                unregister_code(KC_RALT);
-                tap_code16(A(KC_U));
-                tap_code(KC_U);
-                set_mods(mod_state);
-            }
-            return false;
-        }
-        return true;
-        break;
-
-    // Ö & ö
-    case KC_O:
-        if (mod_state & MOD_MASK_ALT) {
-            if (record->event.pressed) {
-                unregister_code(KC_LALT);
-                unregister_code(KC_RALT);
-                tap_code16(A(KC_U));
-                tap_code(KC_O);
-                set_mods(mod_state);
-            }
-            return false;
-        }
-        return true;
-        break;
-
-    // ß
-    case KC_S:
-        if (mod_state & MOD_MASK_ALT) {
-            if (record->event.pressed) {
-                unregister_code(KC_LALT);
-                unregister_code(KC_RALT);
-                SEND_STRING(SS_LALT("s"));
-                set_mods(mod_state);
-            }
-            return false;
-        }
-        return true;
-        break;
-
-    // EUR ß€€€€€€€
-    case KC_E:
-        if (mod_state & MOD_MASK_ALT) {
-            if (record->event.pressed) {
-                unregister_code(KC_LALT);
-                unregister_code(KC_RALT);
-                SEND_STRING(SS_LALT(SS_LSFT("2")));
-                set_mods(mod_state);
-            }
-            return false;
-        }
-        return true;
-        break;
-
-    }
-    return true;
 }
+
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
